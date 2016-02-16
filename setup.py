@@ -26,7 +26,7 @@ def read(fname):
 
 setup(
     name = 'fftw-cffi',
-    version = '0.1.dev1',
+    version = '0.1',
     description = 'Python interface to the FFTW library',
     long_description=read('README.rst'),
     url = 'https://github.com/ghisvail/fftw-cffi',
