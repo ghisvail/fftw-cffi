@@ -11,12 +11,6 @@ from __future__ import absolute_import
 from ._bindings import ffi, lib
 from functools import reduce
 
-__all__ = ('FFTW_FORWARD', 'FFTW_BACKWARD', 'FFTW_MEASURE',
-           'FFTW_DESTROY_INPUT','FFTW_UNALIGNED', 'FFTW_EXHAUSTIVE',
-           'FFTW_PRESERVE_INPUT','FFTW_PATIENT', 'FFTW_ESTIMATE',
-           'FFTW_WISDOM_ONLY','fftw_create_plan', 'fftw_destroy_plan',
-           'fftw_execute_plan')
-
 
 FFTW_FORWARD = lib.FFTW_FORWARD
 FFTW_BACKWARD = lib.FFTW_BACKWARD
@@ -46,14 +40,13 @@ def fftw_destroy_plan(handle):
     lib.fftw_destroy_plan(handle)
 
 
-def fftw_execute_plan(handle, input_array=None, output_array=None):
-    if input_array is None and output_array is None:
-        lib.fftw_execute(handle)
-    elif input_array is not None and output_array is not None:
-        lib.fftw_execute_dft(
-            handle,
-            ffi.cast('fftw_complex *', input_array.ctypes.data),
-            ffi.cast('fftw_complex *', output_array.ctypes.data),
-        )
-    else:
-        raise RuntimeError('Partial update of FFTW plan not supported.')
+def fftw_execute_plan(handle):
+    lib.fftw_execute(handle)
+
+
+def fftw_execute_plan_with(handle, input_array, output_array):
+    lib.fftw_execute_dft(
+        handle,
+        ffi.cast('fftw_complex *', input_array.ctypes.data),
+        ffi.cast('fftw_complex *', output_array.ctypes.data),
+    )
