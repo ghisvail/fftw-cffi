@@ -13,8 +13,9 @@ of an arbitrary array of 64 samples::
     >>> from fftw.fftw import Plan
     >>> import numpy
     >>> input_array = numpy.arange(64, dtype=numpy.complex)
-    >>> plan = Plan(input_array, output_array=numpy.empty_like(input_array))
-    >>> result_array = plan()
+    >>> output_array = numpy.empty_like(input_array)
+    >>> plan = Plan(input_array, output_array)
+    >>> plan.execute()
 
     >>> print(input_array)
     [  0.+0.j   1.+0.j   2.+0.j   3.+0.j   4.+0.j   5.+0.j   6.+0.j   7.+0.j
@@ -26,7 +27,7 @@ of an arbitrary array of 64 samples::
       48.+0.j  49.+0.j  50.+0.j  51.+0.j  52.+0.j  53.+0.j  54.+0.j  55.+0.j
       56.+0.j  57.+0.j  58.+0.j  59.+0.j  60.+0.j  61.+0.j  62.+0.j  63.+0.j]
 
-    >>> print(result_array)
+    >>> print(output_array)
     [ 2016.  +0.j           -32.+651.374964j     -32.+324.9014524j
        -32.+215.72647697j   -32.+160.87486375j   -32.+127.75116108j
        -32.+105.48986269j   -32. +89.43400872j   -32. +77.254834j
