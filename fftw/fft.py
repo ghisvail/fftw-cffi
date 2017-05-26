@@ -8,35 +8,36 @@
 
 from fftw._ffi import ffi, lib
 from numpy import ascontiguousarray, empty_like
+from contextlib import contextmanager
+
+__all__ = ('fftn', 'ifftn')
+
+
+@contextmanager
+def make_plan(shape, input, output, sign, flags):
+    p = lib.fftw_plan_dft(
+        len(shape),
+        ffi.new('const int []', shape),
+        ffi.cast('fftw_complex *', input),
+        ffi.cast('fftw_complex *', output),
+        sign,
+        flags
+    )
+    yield p
+    lib.fftw_destroy_plan(p)
 
 
 def fftn(a):
     a = ascontiguousarray(a, dtype='cdouble')
     b = empty_like(a)
-    p = lib.fftw_plan_dft(
-        a.ndim,
-        ffi.new('const int []', a.shape),
-        ffi.cast('fftw_complex *', a.ctypes.data),
-        ffi.cast('fftw_complex *', b.ctypes.data),
-        -1,     # FFTW_FORWARD
-        64      # FFTW_ESTIMATE
-    )
-    lib.fftw_execute(p)
-    lib.fftw_destroy_plan(p)
+    with make_plan(a.shape, a.ctypes.data, b.ctypes.data, -1, 64) as p:
+        lib.fftw_execute(p)
     return b
 
 
 def ifftn(a):
     a = ascontiguousarray(a, dtype='cdouble')
     b = empty_like(a)
-    p = lib.fftw_plan_dft(
-        a.ndim,
-        ffi.new('const int []', a.shape),
-        ffi.cast('fftw_complex *', a.ctypes.data),
-        ffi.cast('fftw_complex *', b.ctypes.data),
-        +1,     # FFTW_BACKWARD
-        64      # FFTW_ESTIMATE
-    )
-    lib.fftw_execute(p)
-    lib.fftw_destroy_plan(p)
+    with make_plan(a.shape, a.ctypes.data, b.ctypes.data, +1, 64) as p:
+        lib.fftw_execute(p)
     return b
