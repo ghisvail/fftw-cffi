@@ -8,9 +8,10 @@
 
 from fftw._ffi import ffi, lib
 from numpy import ascontiguousarray, empty_like
+from numpy.fft import fftfreq, fftshift, ifftshift
 from contextlib import contextmanager
 
-__all__ = ('fftn', 'ifftn')
+__all__ = ('fftn', 'ifftn', 'fftfreq', 'fftshift', 'ifftshift')
 
 
 @contextmanager
